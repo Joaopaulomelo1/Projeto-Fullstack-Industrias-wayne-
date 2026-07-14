@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Wayne Industries — Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0a0a; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar { width: 220px; background: #111; border-right: 1px solid #222; padding: 24px 0; display: flex; flex-direction: column; position: fixed; height: 100vh; }
+        .sidebar .brand { padding: 0 24px 24px; border-bottom: 1px solid #222; }
+        .sidebar .brand h1 { color: #c0a060; font-size: 20px; letter-spacing: 2px; }
+        .sidebar .brand p { color: #555; font-size: 11px; }
+        .sidebar nav { padding: 16px 0; flex: 1; }
+        .sidebar nav a { display: block; padding: 12px 24px; color: #888; text-decoration: none; font-size: 14px; transition: all 0.2s; }
+        .sidebar nav a:hover, .sidebar nav a.active { color: #c0a060; background: #1a1a1a; border-left: 3px solid #c0a060; }
+        .sidebar .user-info { padding: 16px 24px; border-top: 1px solid #222; font-size: 12px; color: #555; }
+        .sidebar .user-info span { display: block; color: #888; }
+
+        /* Main */
+        .main { margin-left: 220px; padding: 32px; flex: 1; }
+        .main h2 { font-size: 22px; color: #c0a060; margin-bottom: 8px; }
+        .main .subtitle { color: #555; font-size: 13px; margin-bottom: 32px; }
+
+        /* Cards */
+        .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+        .card { background: #111; border: 1px solid #222; border-radius: 8px; padding: 20px; }
+        .card .label { font-size: 12px; color: #555; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .card .value { font-size: 32px; font-weight: bold; color: #c0a060; }
+        .card .sub { font-size: 12px; color: #444; margin-top: 4px; }
+
+        /* Table */
+        .section { background: #111; border: 1px solid #222; border-radius: 8px; padding: 24px; }
+        .section h3 { font-size: 15px; color: #888; margin-bottom: 16px; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th { text-align: left; padding: 10px 12px; color: #555; font-weight: normal; border-bottom: 1px solid #1a1a1a; font-size: 12px; text-transform: uppercase; }
+        td { padding: 12px; border-bottom: 1px solid #1a1a1a; color: #aaa; }
+        tr:last-child td { border-bottom: none; }
+
+        .badge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+        .badge.available { background: #0a2a0a; color: #4a4; }
+        .badge.maintenance { background: #2a1a00; color: #c80; }
+        .badge.deployed { background: #0a1a2a; color: #48f; }
+
+        .empty { color: #333; text-align: center; padding: 32px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="brand">
+            <h1>WAYNE</h1>
+            <p>INDUSTRIES</p>
+        </div>
+        <nav>
+            <a href="/dashboard" class="active">Dashboard</a>
+            <a href="/resources">Recursos</a>
+            {% if role == 'admin' %}
+            <a href="/users">Usuários</a>
+            {% endif %}
+            <a href="/logout">Sair</a>
+        </nav>
+        <div class="user-info">
+            <span>{{ username }}</span>
+            {{ role }}
+        </div>
+    </aside>
+
+    <main class="main">
+        <h2>Painel de Controle</h2>
+        <p class="subtitle">Visão geral das Indústrias Wayne</p>
+
+        <div class="cards">
+            <div class="card">
+                <div class="label">Total de Recursos</div>
+                <div class="value">{{ total_resources }}</div>
+                <div class="sub">equipamentos e veículos</div>
+            </div>
+            <div class="card">
+                <div class="label">Disponíveis</div>
+                <div class="value" style="color:#4a4">{{ available }}</div>
+                <div class="sub">prontos para uso</div>
+            </div>
+            <div class="card">
+                <div class="label">Em Manutenção</div>
+                <div class="value" style="color:#c80">{{ maintenance }}</div>
+                <div class="sub">em reparo</div>
+            </div>
+            <div class="card">
+                <div class="label">Usuários</div>
+                <div class="value">{{ total_users }}</div>
+                <div class="sub">no sistema</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>Recursos Recentes</h3>
+            {% if recent_resources %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Categoria</th>
+                        <th>Status</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in recent_resources %}
+                    <tr>
+                        <td>{{ r.name }}</td>
+                        <td>{{ r.category }}</td>
+                        <td><span class="badge {{ r.status }}">{{ r.status }}</span></td>
+                        <td>{{ r.description or '—' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty">Nenhum recurso cadastrado ainda. <a href="/resources" style="color:#c0a060">Adicionar recursos →</a></div>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>

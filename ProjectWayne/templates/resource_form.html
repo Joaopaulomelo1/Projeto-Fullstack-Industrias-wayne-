@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Wayne Industries — {{ 'Editar' if action == 'edit' else 'Adicionar' }} Recurso</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0a0a; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; min-height: 100vh; }
+        .sidebar { width: 220px; background: #111; border-right: 1px solid #222; padding: 24px 0; display: flex; flex-direction: column; position: fixed; height: 100vh; }
+        .sidebar .brand { padding: 0 24px 24px; border-bottom: 1px solid #222; }
+        .sidebar .brand h1 { color: #c0a060; font-size: 20px; letter-spacing: 2px; }
+        .sidebar .brand p { color: #555; font-size: 11px; }
+        .sidebar nav a { display: block; padding: 12px 24px; color: #888; text-decoration: none; font-size: 14px; }
+        .sidebar nav a:hover { color: #c0a060; background: #1a1a1a; border-left: 3px solid #c0a060; }
+        .main { margin-left: 220px; padding: 32px; flex: 1; }
+
+        .form-box { background: #111; border: 1px solid #222; border-radius: 8px; padding: 32px; max-width: 520px; }
+        h2 { color: #c0a060; margin-bottom: 24px; font-size: 20px; }
+        .field { margin-bottom: 20px; }
+        label { display: block; font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        input, select, textarea { width: 100%; background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 10px 12px; border-radius: 4px; font-size: 14px; font-family: inherit; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #c0a060; }
+        textarea { resize: vertical; min-height: 80px; }
+        .actions { display: flex; gap: 12px; margin-top: 8px; }
+        .btn { padding: 10px 24px; border-radius: 4px; font-size: 14px; font-weight: bold; cursor: pointer; border: none; text-decoration: none; }
+        .btn-gold { background: #c0a060; color: #000; }
+        .btn-ghost { background: transparent; color: #888; border: 1px solid #333; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="brand"><h1>WAYNE</h1><p>INDUSTRIES</p></div>
+        <nav>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/resources">Recursos</a>
+            <a href="/logout">Sair</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <div class="form-box">
+            <h2>{{ 'Editar' if action == 'edit' else 'Adicionar' }} Recurso</h2>
+            <form method="POST">
+                <div class="field">
+                    <label>Nome</label>
+                    <input type="text" name="name" value="{{ resource.name if resource else '' }}" required>
+                </div>
+                <div class="field">
+                    <label>Categoria</label>
+                    <select name="category">
+                        <option value="equipment" {{ 'selected' if resource and resource.category == 'equipment' }}>Equipamento</option>
+                        <option value="vehicle" {{ 'selected' if resource and resource.category == 'vehicle' }}>Veículo</option>
+                        <option value="security_device" {{ 'selected' if resource and resource.category == 'security_device' }}>Dispositivo de Segurança</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Status</label>
+                    <select name="status">
+                        <option value="available" {{ 'selected' if resource and resource.status == 'available' }}>Disponível</option>
+                        <option value="maintenance" {{ 'selected' if resource and resource.status == 'maintenance' }}>Manutenção</option>
+                        <option value="deployed" {{ 'selected' if resource and resource.status == 'deployed' }}>Em Campo</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Descrição</label>
+                    <textarea name="description">{{ resource.description if resource else '' }}</textarea>
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn btn-gold">Salvar</button>
+                    <a href="/resources" class="btn btn-ghost">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

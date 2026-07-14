@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Wayne Industries — {{ 'Editar' if action == 'edit' else 'Novo' }} Usuário</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0a0a; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; min-height: 100vh; }
+        .sidebar { width: 220px; background: #111; border-right: 1px solid #222; padding: 24px 0; display: flex; flex-direction: column; position: fixed; height: 100vh; }
+        .sidebar .brand { padding: 0 24px 24px; border-bottom: 1px solid #222; }
+        .sidebar .brand h1 { color: #c0a060; font-size: 20px; letter-spacing: 2px; }
+        .sidebar .brand p { color: #555; font-size: 11px; }
+        .sidebar nav a { display: block; padding: 12px 24px; color: #888; text-decoration: none; font-size: 14px; }
+        .sidebar nav a:hover { color: #c0a060; background: #1a1a1a; border-left: 3px solid #c0a060; }
+        .main { margin-left: 220px; padding: 32px; flex: 1; }
+        .form-box { background: #111; border: 1px solid #222; border-radius: 8px; padding: 32px; max-width: 480px; }
+        h2 { color: #c0a060; margin-bottom: 24px; font-size: 20px; }
+        .field { margin-bottom: 20px; }
+        label { display: block; font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        input, select { width: 100%; background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 10px 12px; border-radius: 4px; font-size: 14px; }
+        input:focus, select:focus { outline: none; border-color: #c0a060; }
+        .hint { font-size: 11px; color: #444; margin-top: 4px; }
+        .actions { display: flex; gap: 12px; margin-top: 8px; }
+        .btn { padding: 10px 24px; border-radius: 4px; font-size: 14px; font-weight: bold; cursor: pointer; border: none; text-decoration: none; }
+        .btn-gold { background: #c0a060; color: #000; }
+        .btn-ghost { background: transparent; color: #888; border: 1px solid #333; }
+        .alert { padding: 12px 16px; border-radius: 4px; margin-bottom: 20px; font-size: 13px; }
+        .alert.error { background: #2a0a0a; border: 1px solid #600; color: #f88; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="brand"><h1>WAYNE</h1><p>INDUSTRIES</p></div>
+        <nav>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/resources">Recursos</a>
+            <a href="/users">Usuários</a>
+            <a href="/logout">Sair</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <div class="form-box">
+            <h2>{{ 'Editar' if action == 'edit' else 'Novo' }} Usuário</h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endwith %}
+
+            <form method="POST">
+                <div class="field">
+                    <label>Nome de usuário</label>
+                    <input type="text" name="username" value="{{ user.username if user else '' }}" required>
+                </div>
+                <div class="field">
+                    <label>Senha</label>
+                    <input type="password" name="password" {{ '' if action == 'edit' else 'required' }}>
+                    {% if action == 'edit' %}<p class="hint">Deixe em branco para manter a senha atual.</p>{% endif %}
+                </div>
+                <div class="field">
+                    <label>Papel</label>
+                    <select name="role">
+                        <option value="employee" {{ 'selected' if user and user.role == 'employee' }}>Funcionário</option>
+                        <option value="manager" {{ 'selected' if user and user.role == 'manager' }}>Gerente</option>
+                        <option value="admin" {{ 'selected' if user and user.role == 'admin' }}>Administrador</option>
+                    </select>
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn btn-gold">Salvar</button>
+                    <a href="/users" class="btn btn-ghost">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
